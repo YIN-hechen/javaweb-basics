@@ -1,6 +1,7 @@
 package jdbc;
 
 import java.io.InputStream;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.Date;
@@ -52,7 +53,7 @@ public class DAO {
 				e1.printStackTrace();
 			}
 		} finally {
-			release(preparedStatement, null, null, connection);
+			release(preparedStatement, null, null, connection, null);
 		}
 
 	}
@@ -82,7 +83,7 @@ public class DAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			release(preparedStatement, null, null, connection);
+			release(preparedStatement, null, null, connection, null);
 		}
 	}
 
@@ -122,7 +123,7 @@ public class DAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			release(preparedStatement, null, null, connection);
+			release(preparedStatement, null, null, connection, null);
 		}
 
 		return null;
@@ -199,7 +200,7 @@ public class DAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			release(preparedStatement, null, null, connection);
+			release(preparedStatement, null, null, connection, null);
 		}
 
 		return mList;
@@ -235,7 +236,7 @@ public class DAO {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			release(preparedStatement, null, null, connection);
+			release(preparedStatement, null, null, connection, null);
 		}
 
 	}
@@ -276,7 +277,7 @@ public class DAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			release(preparedStatement, null, null, connection);
+			release(preparedStatement, null, null, connection, null);
 		}
 
 	}
@@ -295,7 +296,6 @@ public class DAO {
 		String user = null;
 		String password = null;
 
-		
 		InputStream in = DAO.class.getClassLoader().getResourceAsStream("jdbc/jdbc.properties");
 		Properties config = new Properties();
 		config.load(in);
@@ -340,6 +340,9 @@ public class DAO {
 		Class.forName(driverClass);
 		Connection connection = DriverManager.getConnection(jdbcUrl, user, password);
 
+		// 可以设置隔离级别，MySql默认的隔离级别是REPEATABLE_READ
+		// connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
 		return connection;
 	}
 
@@ -352,7 +355,7 @@ public class DAO {
 	 * @param connection
 	 */
 	public static void release(java.sql.PreparedStatement preparedStatement, ResultSet resultSet, Statement statement,
-			Connection connection) {
+			Connection connection, CallableStatement callableStatement) {
 		if (preparedStatement != null) {
 
 			try {
@@ -388,18 +391,26 @@ public class DAO {
 			}
 		}
 
+		if (callableStatement != null) {
+			try {
+				callableStatement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
-	
-	
-	  /**
-     * 使用Statement
-     * @param sql
-     */
+
+	/**
+	 * 使用Statement
+	 * 
+	 * @param sql
+	 */
 	@Test
 	public static void Query(String sql) {
 
 		Connection connection = null;
-		
+
 		Statement statement = null;
 
 		ResultSet resultSet = null;
@@ -431,9 +442,38 @@ public class DAO {
 			e.printStackTrace();
 		} finally {
 
-			release(null, resultSet, statement, connection);
+			release(null, resultSet, statement, connection, null);
 
 		}
 
 	}
+
+	/**
+	 * 使用jdbc调用存储在数据库中的函数和存储过程
+	 * 有四种  参考：http://sjsky.iteye.com/blog/1246657
+	 * 
+	 */
+    public static void CallableStatment() {
+    	Connection connection=null;
+    	CallableStatement callableStatement=null;
+    	try {
+    		connection=getConnection2(); 
+    		callableStatement=connection.prepareCall("{call TEST_MICHAEL(?,?,?)}");
+    		callableStatement.setString(1, "");
+    		callableStatement.registerOutParameter(2, java.sql.Types.REF_CURSOR);
+    		callableStatement.execute();
+    		
+    		ResultSet rs = (ResultSet) callableStatement.getObject(2);
+    		
+    		//..............................
+    		
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			release(null, null, null, connection,callableStatement);
+			
+		}
+    	
+    	
+    }
 }
