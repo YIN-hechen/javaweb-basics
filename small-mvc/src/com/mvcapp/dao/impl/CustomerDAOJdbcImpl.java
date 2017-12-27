@@ -3,6 +3,7 @@ package com.mvcapp.dao.impl;
 import java.util.List;
 import com.mvcapp.dao.CustomerDAO;
 import com.mvcapp.dao.DAO;
+import com.mvcapp.domain.CriteriaCustomer;
 import com.mvcapp.domain.Customer;
 
 public class CustomerDAOJdbcImpl extends DAO<Customer> implements CustomerDAO {
@@ -36,6 +37,14 @@ public class CustomerDAOJdbcImpl extends DAO<Customer> implements CustomerDAO {
 	public long getCountWithName(String name) {
 		String sql="select count(id) from customers where name=?";
 		return getForValue(sql, name);
+	}
+	
+	public List<Customer> getCountWithCriteriaCustomer(CriteriaCustomer criteriaCustomer){
+		
+		String sql="select id,name,address,phone from customers where name like ? and address like ? and phone like ? ";
+		
+		return getForList(sql,criteriaCustomer.getName(),criteriaCustomer.getAddress(),criteriaCustomer.getPhone());
+		
 	}
 
 }

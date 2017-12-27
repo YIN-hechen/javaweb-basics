@@ -2,11 +2,14 @@ package com.mvcapp.dao;
 
 import java.util.List;
 
+import com.mvcapp.domain.CriteriaCustomer;
 import com.mvcapp.domain.Customer;
 
 public interface CustomerDAO {
 
 	public List<Customer> getAll();
+	
+	public List<Customer> getCountWithCriteriaCustomer(CriteriaCustomer criteriaCustomer);
 	
 	public void save(Customer customer);
 	
