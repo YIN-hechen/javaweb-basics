@@ -95,7 +95,6 @@ public class DAO<T> {
 	 * @return
 	 */
 	public T get(String sql, Object...args) {
-		
 		Connection connection=null;
 		try {
 			connection=JdbcUtils.getConnection();

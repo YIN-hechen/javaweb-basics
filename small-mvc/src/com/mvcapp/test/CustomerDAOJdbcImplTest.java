@@ -2,6 +2,8 @@ package com.mvcapp.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import com.mvcapp.dao.CustomerDAO;
@@ -14,12 +16,18 @@ class CustomerDAOJdbcImplTest {
 	
 	@Test
 	void testGetAll() {
-		
+		List<Customer> customers=customerDAO.getAll();
+		System.out.println(customers);
 	}
 
 	@Test
 	void testSave() {
-		fail("Not yet implemented");
+		Customer custmoer=new Customer();
+		custmoer.setAddress("BeiJing");
+		custmoer.setName("Mike");
+		custmoer.setPhone("15165089756");
+		customerDAO.save(custmoer);
+		
 	}
 
 	@Test
@@ -30,12 +38,14 @@ class CustomerDAOJdbcImplTest {
 
 	@Test
 	void testDelete() {
-		fail("Not yet implemented");
+		customerDAO.delete(1);
+		
 	}
 
 	@Test
 	void testGetCountWithName() {
-		fail("Not yet implemented");
+		long count=customerDAO.getCountWithName("ABC");
+		System.out.println(count);
 	}
 
 }
