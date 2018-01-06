@@ -22,7 +22,7 @@ public class CustomerDAOJdbcImpl extends DAO<Customer> implements CustomerDAO {
 
 	@Override
 	public Customer get(Integer id) {
-		String sql = "select id,name,address,phone from custmoers where id=?";
+		String sql = "select id,name,address,phone from customers where id=?";
 		return get(sql, id);
 	}
 
@@ -45,6 +45,14 @@ public class CustomerDAOJdbcImpl extends DAO<Customer> implements CustomerDAO {
 		
 		return getForList(sql,criteriaCustomer.getName(),criteriaCustomer.getAddress(),criteriaCustomer.getPhone());
 		
+	}
+
+	@Override
+	public void update(Customer customer) {
+		String sql = "UPDATE customers SET name = ?, address = ?, phone = ? " +
+				"WHERE id = ?";
+		update(sql, customer.getName(), customer.getAddress(), 
+				customer.getPhone(), customer.getId());
 	}
 
 }

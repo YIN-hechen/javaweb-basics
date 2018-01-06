@@ -46,7 +46,16 @@ public class Customer {
 	public String toString() {
 		return "Customer [id=" + id + ", name=" + name + ", address=" + address + ", phone=" + phone + "]";
 	}
+
+	public Customer( String name, String address, String phone) {
 	
+		this.name = name;
+		this.address = address;
+		this.phone = phone;
+	}
+	public Customer() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	
 	

@@ -23,4 +23,5 @@ public interface CustomerDAO {
 	 * @return
 	 */
 	public long getCountWithName(String name);
+	public void update(Customer customer);
 }
